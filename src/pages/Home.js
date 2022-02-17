@@ -8,7 +8,6 @@ const Home = () => (
     <Header/>
      <Link to="/product" className="link">Product Page</Link>
      <Link to="/categories" className="link">Categories Page</Link>
-     <Link to="/checkout" className="link">Checkout Page</Link>
   </div>
 );
 
