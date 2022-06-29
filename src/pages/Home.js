@@ -11,6 +11,7 @@ return(
     <Header/>
      <Link to="/product" className="link">Product Page</Link>
      <Link to="/categories" className="link">Categories Page</Link>
+  Hello World
   </div>
   </>
 )
