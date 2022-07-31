@@ -1,18 +1,34 @@
 import { PageHeader, Button,Input,Space,Badge } from 'antd';
 import { useMoralis } from "react-moralis";
-import { Link } from 'react-router-dom';
+import { Link ,Redirect} from 'react-router-dom';
 import CartPage from '../pages/Cartpage';
 import './Header.css'
 import Amazon from "../images/logo.png";
 import USA from "../images/usa.png";
 import BookStore from "../images/bookstore.png";
 import{ShoppingCartOutlined,MenuOutlined} from "@ant-design/icons";
+import Product from '../pages/Product';
+import {Navigate} from "react-router-dom";
+import { useState } from 'react';
 
 const {Search } = Input;
 const categories=["Land","Trees","Plants","River","foodsafety"]; 
 
 const Header = () => {
-const { authenticate,account} = useMoralis();
+const { authenticate,account,isAuthenticated,logout} = useMoralis();
+const [redirect,setRedirect]=useState(false)
+const auth=()=>{
+  if(!isAuthenticated){
+    authenticate()
+  }
+  else{
+    logout();
+    setRedirect(true)
+}
+}
+if (redirect){
+  return <Navigate to={{ pathname: '/' }}/>
+}
   return (
     <div className="site-page-header-ghost-wrapper">
       <PageHeader
@@ -29,17 +45,17 @@ const { authenticate,account} = useMoralis();
             <Button
              className="login"
              key="1" 
-             type="primary" onClick={() => authenticate()}>
-         {account ? <span>{account.slice(0,5)}...</span>: <span>login</span>}
+             type="primary" onClick={auth}>
+         {isAuthenticated ? <span>logout</span>: <span>login</span>}
             </Button>
             <Space size={"large"}>
 
-              <Badge count={0} showZero>
+              {/* <Badge count={0} showZero> */}
               <span className="header-buttons">
                  <ShoppingCartOutlined className="header-icon"/>
-                 <Link to='/Cartpage'>Cart</Link>
+                 {isAuthenticated ? <Link to='/Cartpage'>Cart</Link>: <span className='text-danger'>login First</span>}
               </span>
-              </Badge>
+              {/* </Badge> */}
               <Space className="header-buttons" size={"small"}>
                 <img src={USA} alt="region" className="flag"></img>
               </Space>
