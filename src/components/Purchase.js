@@ -15,29 +15,9 @@ function Purchase({ book }) {
   const [delivery, setDelivery] = useState("");
   const { Moralis, account,isAuthenticated } = useMoralis();
 
+  
 
-  const handleOK = async () => {
-    //Get The Price of MATIC
-    const options = {
-      address: "0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0",
-      chain: "eth",
-
-    };
-    const price = await Moralis.Web3API.token.getTokenPrice(options);
-    const priceMatic = book.price / price.usdPrice;
-
-//Send  Matic to book store owner address
-
-const options1={
-    type:"native",
-    amount:Moralis.Units.ETH(priceMatic),
-    receiver:"0xF7a4f44e5D4b15599C2EC35cC7E6A62ce96a1bE3"
-}
-let result =await Moralis.transfer(options1)
-  };
-
-
-// Save Transaction Details to DB
+// Save To Cart
       const { save } = useNewMoralisObject("product");
       const [Total,setTotal]=useState('')
       console.log(isAuthenticated)
@@ -97,23 +77,6 @@ let result =await Moralis.transfer(options1)
       <Button onClick={saveObject} className="addto" style={{width:'100%',backgroundColor:"#013220",marginTop:'10px',color:"white"}}>
         Add To cart
       </Button>
-      <Modal
-        title="Purchase Product"
-        visible={isModalVisible}
-        onOk={handleOK}
-        onCancel={() => setIsModalVisible(false)}>
-
-        <div style={{ display: "fixed" }}>
-          <img src={book.image} alt="product" style={{ width: "200px" }}></img>
-          <div>
-            <h3>{book.name}</h3>
-            <h2>${book.price}</h2>
-            <h4>Delivery Address</h4>
-            <Input onchange={(value) => setDelivery(value)}></Input>
-          </div>
-        </div>
-      </Modal>
-
     </>
   )
 }

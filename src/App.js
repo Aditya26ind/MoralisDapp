@@ -6,6 +6,7 @@ import Categories from './pages/Categories';
 import CartPage from './pages/Cartpage';
 import { useMoralis,account } from "react-moralis";
 import './App.css';
+import Paypage from './pages/finalpaypage';
 
 const App = ({account}) => (
   <Routes>
@@ -13,6 +14,7 @@ const App = ({account}) => (
     <Route exact path="product" element={<Product />} />
     <Route exact path="categories" element={<Categories />} />
     <Route exact path='Cartpage' element={<CartPage/>}/>
+    <Route exact path='final' element={<Paypage/>}/>
     
   </Routes>
 );
