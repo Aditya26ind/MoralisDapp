@@ -6,16 +6,17 @@ import { Suspense,useEffect, useState } from 'react';
 import { useMoralisQuery } from "react-moralis";
 import { Select, Button, Modal, Input } from 'antd'
 import{ useLocation,Navigate} from 'react-router';
+import { useNewMoralisObject } from "react-moralis";
 
-import { useNavigate } from "react-router-dom";
 
 
 const Paypage = () => {
     const Web3Api = useMoralisWeb3Api();
-    const[address,setAddress]=useState('')
-    const {Moralis, account} = useMoralis();
+    const[address,setAddress]=useState('')  
     let{state:pay}=useLocation();
     const [redirect,setRedirect]=useState(false)
+    const { save } = useNewMoralisObject("TransWay");
+    const { Moralis, account,isAuthenticated } = useMoralis();
 
     // aborting payment
 
@@ -37,24 +38,49 @@ const Paypage = () => {
         const priceMatic =  pay.price/ price.usdPrice;
         console.log(priceMatic)
         // // Send Matic to book store owenr address
+        console.log(pay.name)
+        console.log(pay.price)
     
         const options1 = {
           type: "native", 
-          amount: Moralis.Units.ETH(0), 
+          amount: Moralis.Units.ETH(3), 
           receiver: "0x5e5132540D7363d4862761B168fe220e0f51eB41"
         }
-        let result = await Moralis.transfer(options1)
+        const result  =  await Moralis.transfer(options1)
+        
     
         //Save Transaction Details to DB
-        const Transaction = Moralis.Object.extend("Transaction");
-        const transaction = new Transaction();
+        // const Transaction = Moralis.Object.extend("Transaction");
+        // const transaction = new Transaction();
     
-        transaction.set("Customer", account);
-        transaction.set("Delivery",address);
-        transaction.set("Product",pay.name );
-        transaction.save();
-        
-      }
+        // transaction.set("Customer", account);
+        // transaction.set("Delivery",address);
+        // transaction.set("Product",pay.name );
+        // transaction.save();
+      
+      
+        if (isAuthenticated){const data = {
+          name: pay.name,
+          price:pay.price,
+          accountval:account,
+          receiver:"0x5e5132540D7363d4862761B168fe220e0f51eB41"
+        };
+    
+        save(data, {
+          onSuccess: (TransWay) => {
+            // Execute any logic that should take place after the object is saved.
+            alert(" Transaction Done " + TransWay.id);
+          },
+          onError: (error) => {
+            // Execute any logic that should take place if the save fails.
+            // error is a Moralis.Error with an error code and message.
+            alert("Failed to create new object, with error code: " + error.message);
+          },
+        });}
+        else{
+          alert("Please Login")
+        }
+      };
 
       if (redirect){
         return <Navigate to={{ pathname: '/' }}/>
