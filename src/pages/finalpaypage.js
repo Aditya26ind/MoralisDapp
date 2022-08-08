@@ -43,9 +43,10 @@ const Paypage = () => {
     
         const options1 = {
           type: "native", 
-          amount: Moralis.Units.ETH(3), 
+          amount: Moralis.Units.ETH(priceMatic), 
           receiver: "0x5e5132540D7363d4862761B168fe220e0f51eB41"
         }
+      
         const result  =  await Moralis.transfer(options1)
         
     
@@ -63,6 +64,7 @@ const Paypage = () => {
           name: pay.name,
           price:pay.price,
           accountval:account,
+          //if seller available add dynamic receiver account
           receiver:"0x5e5132540D7363d4862761B168fe220e0f51eB41"
         };
     
